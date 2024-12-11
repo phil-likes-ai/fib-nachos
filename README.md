@@ -51,9 +51,12 @@
 
 ## Use Cases
 
+- **RStudents**: Fibonacci learning and fun exercises.
+- **Reversal Seekers**: Use the Golden Pocket highlight to pinpoint areas where price may stage a reversal.
 - **Swing Traders**: Identify Fibonacci retracements during pullbacks in ongoing trends, optimizing entry/exit points.
 - **Trend Traders**: Confirm trend alignment across multiple EMAs to validate the broader market direction.
 - **Reversal Seekers**: Use the Golden Pocket highlight to pinpoint areas where price may stage a reversal.
+
 
 ## Installation Guide
 
@@ -66,7 +69,7 @@ Adjust settings as desired under the indicator’s settings menu.
 
 ## Disclaimer
 
-This indicator is intended for fun educational and informational purposes only and does not constitute financial advice. Always perform your own due diligence and consider consulting a qualified financial professional before making any trading decisions. Past performance is not indicative of future results.
+This indicator is intended for fun educational and informational purposes only and does not constitute financial advice its literally Fibonacci fun.
 
 ---
 
