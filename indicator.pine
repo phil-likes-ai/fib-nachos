@@ -1,0 +1,75 @@
+//@version=5
+indicator("Fib-Nachos: Full Spectrum", overlay=true)
+
+// === Inputs ===
+show_fibs = input.bool(true, title="Show Full Fibonacci Spectrum (5–233)")
+show_golden_pocket = input.bool(true, title="Highlight Golden Pocket Candles")
+show_trend_labels = input.bool(true, title="Show Trend Change Labels")
+show_emas = input.bool(true, title="Show EMAs")
+
+// === Calculate High and Low ===
+fib_lookback = input.int(100, title="Lookback Period for High/Low", minval=1)
+pivot_high = ta.highest(high, fib_lookback)
+pivot_low = ta.lowest(low, fib_lookback)
+
+// === Fibonacci Levels ===
+var float[] fib_levels = array.new_float(7, na) // Predefine array for retracements
+if bar_index == 0 or ta.change(pivot_high) or ta.change(pivot_low) // Update array on change
+    array.set(fib_levels, 0, pivot_high)
+    array.set(fib_levels, 1, pivot_high - (pivot_high - pivot_low) * 0.236)
+    array.set(fib_levels, 2, pivot_high - (pivot_high - pivot_low) * 0.382)
+    array.set(fib_levels, 3, pivot_high - (pivot_high - pivot_low) * 0.5)
+    array.set(fib_levels, 4, pivot_high - (pivot_high - pivot_low) * 0.618)
+    array.set(fib_levels, 5, pivot_high - (pivot_high - pivot_low) * 0.786)
+    array.set(fib_levels, 6, pivot_low)
+
+// === Plot Horizontal Fibonacci Lines ===
+if show_fibs
+    for i = 0 to array.size(fib_levels) - 1
+        line.new(x1=bar_index - fib_lookback, y1=array.get(fib_levels, i), x2=bar_index, y2=array.get(fib_levels, i), color=color.new(color.yellow, 20), width=1, style=line.style_dotted)
+
+// === Golden Pocket Candle Colors ===
+golden_pocket_high = array.get(fib_levels, 4) // 0.618
+golden_pocket_low = array.get(fib_levels, 5) // 0.786
+barcolor(show_golden_pocket and (close <= golden_pocket_high and close >= golden_pocket_low) ? color.new(color.yellow, 0) : na)
+
+// === Moving Averages (Full Spectrum: 5–233) ===
+ema_5 = ta.ema(close, 5)
+ema_8 = ta.ema(close, 8)
+ema_13 = ta.ema(close, 13)
+ema_21 = ta.ema(close, 21)
+ema_34 = ta.ema(close, 34)
+ema_55 = ta.ema(close, 55)
+ema_89 = ta.ema(close, 89)
+ema_144 = ta.ema(close, 144)
+ema_233 = ta.ema(close, 233)
+
+plot(show_emas ? ema_5 : na, color=color.new(color.gray, 0), title="EMA 5", linewidth=1)
+plot(show_emas ? ema_8 : na, color=color.new(color.green, 0), title="EMA 8", linewidth=1)
+plot(show_emas ? ema_13 : na, color=color.new(color.blue, 0), title="EMA 13", linewidth=1)
+plot(show_emas ? ema_21 : na, color=color.new(color.orange, 0), title="EMA 21", linewidth=1)
+plot(show_emas ? ema_34 : na, color=color.new(color.yellow, 0), title="EMA 34", linewidth=1)
+plot(show_emas ? ema_55 : na, color=color.new(color.red, 0), title="EMA 55", linewidth=1)
+plot(show_emas ? ema_89 : na, color=color.new(color.purple, 0), title="EMA 89", linewidth=1)
+plot(show_emas ? ema_144 : na, color=color.new(color.fuchsia, 0), title="EMA 144", linewidth=1)
+plot(show_emas ? ema_233 : na, color=color.new(color.yellow, 0), title="EMA 233", linewidth=1)
+
+// === Trend Change Labels ===
+trend_short_up = ta.crossover(ema_8, ema_21)
+trend_short_down = ta.crossunder(ema_8, ema_21)
+trend_medium_up = ta.crossover(ema_21, ema_55)
+trend_medium_down = ta.crossunder(ema_21, ema_55)
+trend_long_up = ta.crossover(ema_55, ema_233)
+trend_long_down = ta.crossunder(ema_55, ema_233)
+
+plotshape(show_trend_labels and trend_short_up, style=shape.labelup, location=location.belowbar, color=color.green, text="S", size=size.tiny, title="Short-Term Up Trend")
+plotshape(show_trend_labels and trend_short_down, style=shape.labeldown, location=location.abovebar, color=color.red, text="S", size=size.tiny, title="Short-Term Down Trend")
+plotshape(show_trend_labels and trend_medium_up, style=shape.labelup, location=location.belowbar, color=color.green, text="M", size=size.tiny, title="Medium-Term Up Trend")
+plotshape(show_trend_labels and trend_medium_down, style=shape.labeldown, location=location.abovebar, color=color.red, text="M", size=size.tiny, title="Medium-Term Down Trend")
+plotshape(show_trend_labels and trend_long_up, style=shape.labelup, location=location.belowbar, color=color.green, text="L", size=size.tiny, title="Long-Term Up Trend")
+plotshape(show_trend_labels and trend_long_down, style=shape.labeldown, location=location.abovebar, color=color.red, text="L", size=size.tiny, title="Long-Term Down Trend")
+
+// === Background Highlight for Trends ===
+bullish_trend = ema_8 > ema_21 and ema_21 > ema_55
+bearish_trend = ema_8 < ema_21 and ema_21 < ema_55
+bgcolor(bullish_trend ? color.new(color.green, 85) : bearish_trend ? color.new(color.red, 85) : na, title="Trend BG")
