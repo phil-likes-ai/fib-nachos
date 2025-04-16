@@ -71,6 +71,3 @@ Adjust settings as desired under the indicator’s settings menu.
 
 This indicator is intended for fun educational and informational purposes only and does not constitute financial advice its literally Fibonacci fun.
 
----
-
-By combining the power of full-spectrum Fibonacci retracements with a stochastics and your other favorites can help deliver a versatile, visually intuitive framework for enhanced technical analysis and more confident trading decisions.
